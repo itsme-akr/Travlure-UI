@@ -8,8 +8,16 @@ import Profile from "./pages/Profile";
 import ProfileQuiz from "./pages/ProfileQuiz";
 import MobileNav from "./components/MobileNav";
 import Settings from "./pages/Settings";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
 import { SaveProvider } from "./context/SaveContext";
+
+<div className="min-h-screen bg-cream">
+  <Navbar />
+  <Routes />
+  <MobileNav />
+</div>
 
 export default function App() {
   return (
@@ -28,6 +36,8 @@ export default function App() {
           <Route path="/quiz" element={<ProfileQuiz />} />
           <Route path="/place/:id" element={<PlaceDetail />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
         </Routes>
         </div>
 

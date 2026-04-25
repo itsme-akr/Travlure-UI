@@ -1,27 +1,37 @@
 import { FiMessageCircle, FiMail, FiMapPin, FiCalendar } from "react-icons/fi";
 import { FaStar, FaRegCompass, FaHeart } from "react-icons/fa";
+import { useState } from "react";
+import FormModal from "./FormModal";
+
+
 
 export default function ExploreMore() {
+  const [activeForm, setActiveForm] = useState(null);
+  const FORM_TYPES = {
+  FEEDBACK: "feedback",
+  CONTACT: "contact",
+};
+
   const tiles = [
     {
       title: "Hidden Gems",
       img: "https://images.unsplash.com/photo-1542309174-d33b34ce6ea7",
-      icon: <FaRegCompass className="text-[#c9a44c]" />,
+      icon: <FaRegCompass className="text-gold" />,
     },
     {
       title: "Top Rated",
       img: "https://images.unsplash.com/photo-1550293750-dde2bed30d54",
-      icon: <FaStar className="text-[#c9a44c]" />,
+      icon: <FaStar className="text-gold" />,
     },
     {
       title: "Nearby You",
       img: "https://images.unsplash.com/photo-1510265236892-329bfd7de7a1",
-      icon: <FiMapPin className="text-[#c9a44c]" />,
+      icon: <FiMapPin className="text-gold" />,
     },
     {
       title: "Weekend Picks",
       img: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b",
-      icon: <FiCalendar className="text-[#c9a44c]" />,
+      icon: <FiCalendar className="text-gold" />,
     },
   ];
 
@@ -35,7 +45,7 @@ export default function ExploreMore() {
           {/* Heading LEFT aligned */}
           <div className="mb-10">
             <h2 className="text-2xl font-heading">Explore More</h2>
-            <div className="w-[70px] h-[3px] bg-[#c9a44c] mt-2"></div>
+            <div className="w-[70px] h-[3px] bg-gold mt-2"></div>
           </div>
 
           {/* Taller Tiles */}
@@ -70,14 +80,14 @@ export default function ExploreMore() {
 
           {/* Tagline */}
           <div className="flex flex-col items-center mb-6">
-            <FaHeart className="text-[#c9a44c] text-lg mb-2" />
+            <FaHeart className="text-gold text-lg mb-2" />
             <h3 className="text-lg font-heading">Happy to Serve You</h3>
 
             {/* Divider */}
             <div className="flex items-center gap-3 mt-3 w-full max-w-sm">
-              <div className="flex-1 h-[1px] bg-[#c9a44c]"></div>
-              <FaStar className="text-[#c9a44c] text-xs" />
-              <div className="flex-1 h-[1px] bg-[#c9a44c]"></div>
+              <div className="flex-1 h-[1px] bg-gold"></div>
+              <FaStar className="text-gold text-xs" />
+              <div className="flex-1 h-[1px] bg-gold"></div>
             </div>
           </div>
 
@@ -85,7 +95,9 @@ export default function ExploreMore() {
           <div className="grid md:grid-cols-2 gap-4">
 
             {/* Feedback */}
-            <div className="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition text-center">
+            <div 
+              onClick={() => setActiveForm(FORM_TYPES.FEEDBACK)}
+              className="bg-white rounded-xl p-4 shadow-sm hover:shadow-md cursor-pointer transition text-center">
               <div className="flex justify-center mb-2">
                 <FiMessageCircle className="text-magenta text-lg" />
               </div>
@@ -96,7 +108,9 @@ export default function ExploreMore() {
             </div>
 
             {/* Contact */}
-            <div className="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition text-center">
+            <div 
+              onClick={() => setActiveForm(FORM_TYPES.CONTACT)}
+              className="bg-white rounded-xl p-4 shadow-sm hover:shadow-md cursor-pointer transition text-center">
               <div className="flex justify-center mb-2">
                 <FiMail className="text-magenta text-lg" />
               </div>
@@ -115,6 +129,11 @@ export default function ExploreMore() {
 
         </div>
       </div>
+
+      <FormModal 
+        type={activeForm} 
+        onClose={() => setActiveForm(null)} 
+      />
 
     </div>
   );

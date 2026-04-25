@@ -11,11 +11,12 @@ export default function Discover() {
   const [filters, setFilters] = useState(null);
   const [profile, setProfile] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
+  const [recent, setRecent] = useState([]); // 🔥 NEW
 
   const resultsRef = useRef(null);
   const navigate = useNavigate();
 
-  // 🔥 SAFE PARSE FUNCTION (prevents crashes)
+  // 🔥 SAFE PARSE FUNCTION
   const safeParse = (key) => {
     try {
       const data = localStorage.getItem(key);
@@ -47,17 +48,30 @@ export default function Discover() {
     });
   }, []);
 
-  // 🔥 SCROLL TO RESULTS
+  // 🔥 LOAD RECENT SEARCHES
+  useEffect(() => {
+    const stored = safeParse("recentSearches") || [];
+    const cleaned = stored.filter((s) => s && typeof s === "object");
+    setRecent(cleaned);
+  }, []);
+
+  // 🔥 SCROLL TO RESULTS (OFFSET FIXED)
   useEffect(() => {
     if (filters && resultsRef.current) {
-      resultsRef.current.scrollIntoView({
+      const yOffset = -100;
+      const y =
+        resultsRef.current.getBoundingClientRect().top +
+        window.pageYOffset +
+        yOffset;
+
+      window.scrollTo({
+        top: y,
         behavior: "smooth",
-        block: "start",
       });
     }
   }, [filters]);
 
-  // 🔥 SAFE + CLEAN SAVE SEARCH (DEDUP + LIMIT 5)
+  // 🔥 SAVE SEARCH (DEDUP + LIMIT 5)
   const saveSearch = (newFilters) => {
     if (!newFilters || typeof newFilters !== "object") return;
 
@@ -78,23 +92,33 @@ export default function Discover() {
       "recentSearches",
       JSON.stringify(updated)
     );
+
+    setRecent(updated); // 🔥 KEEP STATE IN SYNC
   };
+
+  // 🔥 NEW LOGIC: detect quiz-based results
+  const isFromQuiz = profile && !filters?.query;
 
   return (
     <div>
       {/* 🔍 HERO */}
-      <Hero
-        onSearch={(newFilters) => {
-          setFilters(newFilters);
-          saveSearch(newFilters);
-        }}
-        onOpenFilters={() => setShowFilters(true)}
-      />
+      <section className="h-screen">
+        <Hero
+          onSearch={(newFilters) => {
+            setFilters(newFilters);
+            saveSearch(newFilters);
+          }}
+          onOpenFilters={() => setShowFilters(true)}
+        />
+      </section>
 
       {/* 📊 RESULTS */}
       {filters && (
         <div ref={resultsRef}>
-          <ResultsSection filters={filters} />
+          <ResultsSection 
+            filters={filters} 
+            fromQuiz={isFromQuiz} 
+          />
         </div>
       )}
 
@@ -114,23 +138,25 @@ export default function Discover() {
         />
       )}
 
-      {/* 🕘 RECENT SEARCHES */}
-      <div className="bg-cream px-6 pb-16 space-y-16">
-        <div className="max-w-6xl mx-auto mb-10">
-          <h3 className="text-xl font-heading mb-4">
-            Your Recent Searches
-          </h3>
-          <div className="w-[70px] h-[3px] bg-[#c9a44c] mt-2"></div>
+      {/* 🕘 RECENT SEARCHES (CONDITIONAL) */}
+      {recent.length > 0 && (
+        <div className="bg-cream px-6 pb-16 space-y-16">
+          <div className="max-w-6xl mx-auto mb-10">
+            <h3 className="text-xl font-heading mb-4">
+              Your Recent Searches
+            </h3>
+            <div className="w-[70px] h-[3px] bg-gold mt-2"></div>
 
-          <RecentSearches
-            onSearch={(search) => {
-              if (!search || typeof search !== "object") return;
-              setFilters(search);
-              saveSearch(search);
-            }}
-          />
+            <RecentSearches
+              onSearch={(search) => {
+                if (!search || typeof search !== "object") return;
+                setFilters(search);
+                saveSearch(search);
+              }}
+            />
+          </div>
         </div>
-      </div>
+      )}
 
       {/* 🔽 EXPLORE */}
       <ExploreMore />

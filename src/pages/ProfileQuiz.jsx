@@ -11,7 +11,17 @@ import {
   LuMoon,
   LuSparkles,
   LuSmile,
+  LuStar,
 } from "react-icons/lu";
+import { FiUser, FiMail, FiPhone, FiMapPin, FiSun, FiMoon, FiCoffee, FiVolumeX, FiTrendingUp, FiStar, FiHeart, FiUsers } from "react-icons/fi";
+import {
+  FaStar,
+  FaGem,
+  FaTag,
+  FaUtensils,
+  FaMapMarkerAlt,
+  FaHeart,
+} from "react-icons/fa";
 
 export default function ProfileQuiz() {
   const navigate = useNavigate();
@@ -29,6 +39,14 @@ export default function ProfileQuiz() {
     diet: [],
     priorities: [],
   });
+  const priorityIcons = {
+  "Highly Rated": FaStar,
+  "Hidden Gems": FaGem,
+  "Value Picks": FaTag,
+  "Ambiance": FaUtensils,
+  "Proximity": FaMapMarkerAlt,
+  "Local Favorites": FaHeart,
+};
 
   // 🔥 Toggle helper
   const toggle = (value, key, limit = null) => {
@@ -61,8 +79,8 @@ export default function ProfileQuiz() {
   { label: "Romantic", icon: <LuHeart /> },
   { label: "Family", icon: <LuUsers /> },
   { label: "Quiet", icon: <LuMoon /> },
-  { label: "Trendy", icon: <LuSparkles /> },
-  { label: "Upscale", icon: <LuSparkles /> },
+  { label: "Trendy", icon: <FiTrendingUp /> },
+  { label: "Upscale", icon: <FiStar /> },
   { label: "Casual", icon: <LuSmile /> },
 ];
 
@@ -240,15 +258,19 @@ export default function ProfileQuiz() {
                 "Ambiance",
                 "Proximity",
                 "Local Favorites",
-              ].map((p) => (
-                <QuizTile
-                  key={p}
-                  label={p}
-                  icon="⭐"
-                  selected={answers.priorities.includes(p)}
-                  onClick={() => toggle(p, "priorities")}
-                />
-              ))}
+              ].map((p) => {
+                const Icon = priorityIcons[p];
+
+                return (
+                  <QuizTile
+                    key={p}
+                    label={p}
+                    icon={<Icon className="text-lg" />}
+                    selected={answers.priorities.includes(p)}
+                    onClick={() => toggle(p, "priorities")}
+                  />
+                );
+              })}
             </div>
           </>
         )}

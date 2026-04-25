@@ -1,13 +1,12 @@
-import { NavLink } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-
+import { NavLink, useNavigate } from "react-router-dom";
 
 export default function Navbar() {
   const navigate = useNavigate();
-  return (
-    <div className="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-xl border-b border-gray-200">
 
-      <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
+  return (
+    <div className="fixed top-0 w-full z-50 bg-cream/95 backdrop-blur-xl border-b border-gray-200">
+
+      <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-3 md:py-4">
 
         {/* Logo */}
         <div
@@ -20,7 +19,7 @@ export default function Navbar() {
           <img
             src="/logo.png"
             alt="Travlure"
-            className="w-8 h-8 object-contain"
+            className="w-8 h-8 md:w-10 md:h-10"
           />
           <span className="font-heading text-lg tracking-wide">
             Travlure
@@ -28,7 +27,7 @@ export default function Navbar() {
         </div>
 
         {/* Links */}
-        <div className=" pb-20 md:pb-0 hidden md:flex gap-8 text-sm font-medium">
+        <div className="hidden md:flex gap-8 text-sm font-medium">
 
           <NavLink
             to="/"
@@ -58,19 +57,36 @@ export default function Navbar() {
           </NavLink>
 
           <NavLink
-          to="/settings" 
-          className={({isActive}) =>
-            isActive ? "text-magenta" : "text-gray-700 hover:text-magenta"
-        }
+            to="/settings"
+            className={({ isActive }) =>
+              isActive ? "text-magenta" : "text-gray-700 hover:text-magenta"
+            }
           >
-            Settings</NavLink>
+            Settings
+          </NavLink>
 
         </div>
 
         {/* CTA */}
-        <button className="bg-olive px-4 py-2 rounded-lg text-sm font-semibold text-white hover:bg-gold transition shadow-sm">
-          Log In
-        </button>
+        <div className="flex items-center gap-4">
+
+          {/* Secondary CTA */}
+          <button
+            onClick={() => navigate("/login")}
+            className="text-sm font-semibold text-black hover:text-magenta transition"
+          >
+            Log In
+          </button>
+
+          {/* Primary CTA */}
+          <button
+            onClick={() => navigate("/signup")}
+            className="bg-olive text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-gold transition shadow-sm hover:scale-105 active:scale-95"
+          >
+            Sign Up
+          </button>
+
+        </div>
 
       </div>
     </div>

@@ -1,5 +1,4 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import MapView from "../components/MapView";
 
 export default function PlaceDetail() {
   const { state: place } = useLocation();
@@ -12,6 +11,10 @@ export default function PlaceDetail() {
       </div>
     );
   }
+
+  const mapQuery = place.location?.lat && place.location?.lng
+    ? `${place.location.lat},${place.location.lng}`
+    : `${place.location?.city || ""},${place.location?.state || ""}`;
 
   return (
     <div className="min-h-screen pb-20 max-w-3xl mx-auto bg-cream pt-20">
@@ -58,7 +61,7 @@ export default function PlaceDetail() {
           <div className="bg-white p-4 rounded-xl shadow">
             <h3 className="font-semibold mb-2">Location</h3>
             <p className="text-gray-600">
-              {place.location.city}, {place.location.state}
+              {place.location?.city}, {place.location?.state}
             </p>
           </div>
 
@@ -80,7 +83,13 @@ export default function PlaceDetail() {
             📍 Location
           </h2>
 
-          <MapView location={place.location} />
+          <iframe
+            width="100%"
+            height="300"
+            className="rounded-xl mt-4"
+            loading="lazy"
+            src={`https://www.google.com/maps?q=${mapQuery}&output=embed`}
+          ></iframe>
         </div>
 
       </div>

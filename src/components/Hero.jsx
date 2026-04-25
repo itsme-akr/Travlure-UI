@@ -25,7 +25,7 @@ export default function Hero({ onSearch, onOpenFilters }) {
   }, []);
 
   return (
-    <div className="relative w-full h-[90vh] overflow-hidden">
+    <div className="relative w-full h-[95vh] overflow-hidden">
 
       {/* 🔥 Background Images */}
       {images.map((img, i) => (

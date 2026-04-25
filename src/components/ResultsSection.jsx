@@ -2,7 +2,7 @@ import { useState } from "react";
 import PlaceCard from "./PlaceCard";
 import RecommendationSection from "./RecommendationSection";
 
-export default function ResultsSection({ filters }) {
+export default function ResultsSection({ filters, fromQuiz }) {
   const [showAll, setShowAll] = useState(false);
 
   const allPlaces = [
@@ -99,7 +99,7 @@ export default function ResultsSection({ filters }) {
 
       <div className="bg-cream -mt-10 pt-16 pb-16 px-6">
         <h2 className="text-3xl font-heading text-center mb-8">
-          {filtered.length === 0 ? "No Results Found" : "Search Results"}
+          {fromQuiz ? "Discover Our Favorites" : noFilters ? "Discover Our Favorites" : "Search Results"}
         </h2>
 
         {filtered.length === 0 ? (
