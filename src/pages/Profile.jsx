@@ -6,13 +6,38 @@ import { IoSparkles } from "react-icons/io5";
 import { GiLoveMystery } from "react-icons/gi";
 import { FiUpload } from "react-icons/fi";
 import { FiUser, FiMail, FiPhone, FiMapPin, FiSun, FiMoon, FiCoffee, FiVolumeX, FiTrendingUp, FiStar, FiHeart, FiUsers } from "react-icons/fi";
+import { FaStar, FaGem, FaTag, FaMapMarkerAlt, FaHeart, FaFire, FaBolt,} from "react-icons/fa";
 
 export default function Profile() {
   const [profile, setProfile] = useState(null);
   const [avatar, setAvatar] = useState(
     localStorage.getItem("userAvatar") || null
   );
-  
+  const [diet, setDiet] = useState([]);
+  useEffect(() => {
+    if (profile?.diet) {
+      setDiet(profile.diet);
+    }
+}, [profile]);
+
+  const [sensitivities, setSensitivities] = useState([]);
+  useEffect(() => {
+    if (profile?.sensitivities) {
+      setSensitivities(profile.sensitivities);
+    }
+  }, [profile]);
+
+  const priorityIcons = {
+  "Highly Rated": FaStar,
+  "Hidden Gems": FaGem,
+  "Value Picks": FaTag,
+  "Ambiance": FaUtensils,
+  "Proximity": FaMapMarkerAlt,
+  "Local Favorites": FaHeart,
+  "Trending Now": FaFire,
+  "Quick Bites": FaBolt,
+};
+
 
   const navigate = useNavigate();
 
@@ -61,6 +86,16 @@ export default function Profile() {
   const address = account?.address || "Anand, Gujarat, India";
   const desiredPlaces =
     profile?.desiredPlaces || ["Goa", "Manali", "Udaipur"];
+  const saveDiet = () => {
+  const updated = { 
+    ...profile, 
+    diet,
+    sensitivities 
+  };
+
+  localStorage.setItem("userProfile", JSON.stringify(updated));
+  setProfile(updated);
+};
 
   return (
     <div className="bg-cream pt-28 pb-20 min-h-screen px-6">
@@ -81,7 +116,7 @@ export default function Profile() {
           <img
             src={avatar}
             alt="avatar"
-            className="w-full h-full object-cover"
+            className="w-16 h-16 rounded-full object-cover"
           />
         ) : (
           <span className="bg-olive w-full h-full flex items-center justify-center">
@@ -120,31 +155,34 @@ export default function Profile() {
 
     <div className="flex items-center gap-2 text-gray-600">
       <FiPhone/>
-      <p>{contact}</p>
+      <p>{account?.phone || "011-2222-333"}</p>
     </div>
 
     <div className="flex items-center gap-2 text-gray-600">
       <FiMapPin/>
-      <p>{address}</p>
+      <p>{account?.address || "XYZ-street, Anywhere, USA"}</p>
     </div>
   </div>
 
   {/* DESIRED PLACES */}
-  <div>
-    <p className="text-xs text-gray-500 mb-1">
-      Desired Places
-    </p>
-    <div className="flex flex-wrap gap-2">
-      {desiredPlaces.map((place, i) => (
-        <span
-          key={i}
-          className="px-3 py-1 bg-cream rounded-full text-xs"
-        >
-          {place}
-        </span>
-      ))}
+  {account?.desired?.length > 0 && (
+    <div>
+      <p className="text-xs text-gray-500 mb-1">
+        Desired Places
+      </p>
+
+      <div className="flex flex-wrap gap-2">
+        {account.desired.map((place, i) => (
+          <span
+            key={i}
+            className="px-3 py-1 bg-cream rounded-full text-xs"
+          >
+            {place}
+          </span>
+        ))}
+      </div>
     </div>
-  </div>
+  )}
 
   {/* VIBE SUMMARY (IMPROVED LOOK) */}
   <div className="border-t pt-4 space-y-3 text-sm">
@@ -244,9 +282,21 @@ export default function Profile() {
             </p>
 
             <div className="space-y-3">
-              <PreviewCard name="The Terrace Café" tag="Romantic • Upscale" />
-              <PreviewCard name="Skyline Lounge" tag="Bars • Night Vibe" />
-              <PreviewCard name="Urban Spice Kitchen" tag="Local • Authentic • Cozy" />
+              <PreviewCard
+                name="The Terrace Café"
+                tag="Romantic • Upscale"
+                image="https://images.unsplash.com/photo-1559339352-11d035aa65de"
+              />
+              <PreviewCard
+                name="Skyline Lounge"
+                tag="Bars • Night Vibe"
+                image="https://images.unsplash.com/photo-1514933651103-005eec06c04b"
+              />
+              <PreviewCard
+                name="Urban Spice Kitchen"
+                tag="Local • Authentic • Cozy"
+                image="https://images.unsplash.com/photo-1504674900247-0877df9cc836"
+              />
             </div>
           </div>
         </div>
@@ -261,20 +311,40 @@ export default function Profile() {
             </h3>
 
             <div className="grid grid-cols-2 gap-4">
+
+              {/* 🔹 Lifestyle */}
               <div>
                 <p className="text-body font-medium mb-2 text-gray-600">
                   Lifestyle
                 </p>
 
+                {/* Selected Tags */}
                 <div className="flex flex-wrap gap-2 mb-3">
-                  {profile?.diet?.map((d, i) => (
-                    <span key={i} className="px-3 py-1 bg-cream rounded">
-                      {d}
+                  {diet.map((d, i) => (
+                    <span
+                      key={i}
+                      onClick={() =>
+                        setDiet((prev) =>
+                          prev.filter((item) => item !== d)
+                        )
+                      }
+                      className="px-3 py-1 bg-cream rounded cursor-pointer text-sm"
+                    >
+                      {d} ✕
                     </span>
                   ))}
                 </div>
 
-                <select className="w-full border rounded px-2 py-1 text-sm">
+                {/* Dropdown */}
+                <select
+                  className="w-full border rounded px-2 py-1 text-sm"
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value !== "Select" && !diet.includes(value)) {
+                      setDiet((prev) => [...prev, value]);
+                    }
+                  }}
+                >
                   <option>Select</option>
                   <option>Vegetarian</option>
                   <option>Vegan</option>
@@ -284,25 +354,56 @@ export default function Profile() {
                 </select>
               </div>
 
-              <div>
-                <p className="text-body font-medium mb-2 text-gray-600">
-                  Food Sensitivities
-                </p>
+              {/* 🔹 Food Sensitivities */}
+            <div>
+              <p className="text-body font-medium mb-2 text-gray-600">
+                Food Sensitivities
+              </p>
 
-                <div className="flex flex-wrap gap-2 mb-3">
-                  <span className="px-3 py-1 bg-cream rounded">
-                    Nuts
+              {/* Selected Tags */}
+              <div className="flex flex-wrap gap-2 mb-3">
+                {sensitivities.map((s, i) => (
+                  <span
+                    key={i}
+                    onClick={() =>
+                      setSensitivities((prev) =>
+                        prev.filter((item) => item !== s)
+                      )
+                    }
+                    className="px-3 py-1 bg-cream rounded cursor-pointer text-sm"
+                  >
+                    {s} ✕
                   </span>
-                </div>
-
-                <select className="w-full border rounded px-2 py-1 text-sm">
-                  <option>Select</option>
-                  <option>Gluten</option>
-                  <option>Dairy</option>
-                  <option>Soy</option>
-                </select>
+                ))}
               </div>
+
+              {/* Dropdown */}
+              <select
+                className="w-full border rounded px-2 py-1 text-sm"
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value !== "Select" && !sensitivities.includes(value)) {
+                    setSensitivities((prev) => [...prev, value]);
+                  }
+                }}
+              >
+                <option>Select</option>
+                <option>Gluten</option>
+                <option>Dairy</option>
+                <option>Soy</option>
+                <option>Nuts</option>
+                <option>Shellfish</option>
+              </select>
             </div>
+            </div>
+
+            {/* 🔥 SAVE BUTTON */}
+            <button
+              onClick={saveDiet}
+              className="mt-4 w-full bg-olive text-white py-2 rounded-lg"
+            >
+              Save Preferences
+            </button>
           </div>
 
           {/* RECOMMENDATION */}
@@ -324,15 +425,17 @@ export default function Profile() {
               ].map((item) => {
                 const selected =
                   profile?.priorities?.includes(item);
+                const Icon = priorityIcons[item];
 
                 return (
                   <div
                     key={item}
-                    className={`p-4 rounded-xl border
+                    className={`p-4 rounded-xl border flex items-center gap-3
                       ${selected
                         ? "bg-cream border-magenta"
                         : "bg-cream-5 opacity-60"}`}
                   >
+                    <Icon className={`text-lg ${selected ? "text-magenta" : "text-gray-500"}`} />
                     <p className="font-medium text-sm">{item}</p>
                   </div>
                 );
@@ -349,14 +452,23 @@ export default function Profile() {
 
 /* COMPONENTS */
 
-function PreviewCard({ name, tag }) {
+function PreviewCard({ name, tag, image }) {
   return (
-    <div className="flex items-center gap-4 p-3 bg-cream rounded-xl">
-      <div className="w-14 h-14 bg-gray-300 rounded-xl" />
-      <div>
-        <p className="text-sm font-medium">{name}</p>
+    <div className="flex items-center gap-4 bg-white p-3 rounded-xl shadow-sm hover:shadow-md transition">
+
+      {/* 🔹 Image */}
+      <img
+        src={image}
+        alt={name}
+        className="w-16 h-16 rounded-lg object-cover"
+      />
+
+      {/* 🔹 Content */}
+      <div className="flex-1">
+        <p className="font-medium text-sm">{name}</p>
         <p className="text-xs text-gray-500">{tag}</p>
       </div>
+
     </div>
   );
 }

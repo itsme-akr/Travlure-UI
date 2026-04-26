@@ -11,7 +11,7 @@ export default function RecentSearches({ onSearch }) {
   }
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
       {searches
         .filter((s) => s && typeof s === "object") // 🔥 FIX
         .map((s, i) => (

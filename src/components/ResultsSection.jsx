@@ -15,7 +15,7 @@ export default function ResultsSection({ filters, fromQuiz }) {
         state: "NY",
       },
       description: "Trendy rooftop with skyline views.",
-      image: "https://images.unsplash.com/photo-1559339352-11d035aa65de",
+      image: "https://images.unsplash.com/photo-1622758235004-51977c5863f5",
     },
     {
       name: "Cafe Lumière",
@@ -27,7 +27,7 @@ export default function ResultsSection({ filters, fromQuiz }) {
       },
       rating: 4.6,
       description: "Cozy café perfect for evening chill.",
-      image: "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb",
+      image: "https://images.unsplash.com/photo-1559925393-8be0ec4767c8",
     },
     {
       name: "Velvet Lounge",
@@ -51,7 +51,7 @@ export default function ResultsSection({ filters, fromQuiz }) {
       },
       rating: 4.2,
       description: "Explore art and history.",
-      image: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0",
+      image: "https://images.unsplash.com/photo-1491156855053-9cdff72c7f85",
     },
     {
       name: "Sunset Harbor",
@@ -75,7 +75,7 @@ export default function ResultsSection({ filters, fromQuiz }) {
       },
       rating: 4.4,
       description: "Quiet reading café with artisanal coffee.",
-      image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4",
+      image: "https://images.unsplash.com/photo-1558210834-473f430c09ac",
     },
   ];
 

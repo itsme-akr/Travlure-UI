@@ -27,6 +27,7 @@ export default function ProfileQuiz() {
   const navigate = useNavigate();
 
   const [step, setStep] = useState(1);
+  const prev = () => setStep((s) => Math.max(1, s - 1));
 
   const [answers, setAnswers] = useState({
     categories: [],
@@ -89,13 +90,15 @@ export default function ProfileQuiz() {
   const finish = () => {
     localStorage.setItem("userProfile", JSON.stringify(answers));
     alert("Profile Saved Successfully!");
-    navigate("/");
+    navigate("/profile");
   };
 
   return (
-    <div className="min-h-screen bg-cream flex items-center justify-center px-6">
+    <div className={`min-h-screen bg-cream px-6 flex justify-center
+  ${step === 2 ? "items-start pt-24 pb-10" : "items-center"}
+`}>
 
-      <div className="bg-[FAF6F0] p-8 rounded-3xl shadow-xl w-full max-w-2xl">
+      <div className="bg-[FAF6F0] p-8 rounded-3xl shadow-xl w-full max-w-2xl border border-gold">
 
         {/* HEADER */}
         <h1 className="font-heading text-2xl mb-2">
@@ -190,7 +193,7 @@ export default function ProfileQuiz() {
                       className={`cursor-pointer flex flex-col items-center gap-2 p-2.5 rounded-xl transition
                         ${
                           isSelected
-                            ? "bg-magenta text-white"
+                            ? "bg-magenta text-black"
                             : "bg-[#FAF6F0] border border-gray-200/50 hover:border-magenta shadow-sm"
                         }
                         ${isDisabled ? "opacity-40" : ""}
@@ -277,22 +280,34 @@ export default function ProfileQuiz() {
 
         {/* NAV */}
         <div className="flex justify-between mt-6">
+
+          {/* PREVIOUS */}
+          {step > 1 && (
+            <button
+              onClick={prev}
+              className="px-4 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100"
+            >
+              ← Previous
+            </button>
+          )}
+
+          {/* NEXT / FINISH */}
           {step < 4 ? (
             <button
               onClick={next}
-              className="bg-olive text-white px-4 py-2 rounded-lg"
+              className="ml-auto bg-olive text-white px-4 py-2 rounded-lg"
             >
               Next →
             </button>
           ) : (
             <button
               onClick={finish}
-              className="bg-magenta text-white px-4 py-2 rounded-lg"
-              
+              className="ml-auto bg-magenta text-white px-4 py-2 rounded-lg"
             >
               Finish
             </button>
           )}
+
         </div>
 
       </div>

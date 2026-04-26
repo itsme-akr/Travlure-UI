@@ -1,8 +1,14 @@
 import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 export default function PlaceDetail() {
   const { state: place } = useLocation();
   const navigate = useNavigate();
+
+  // ✅ Scroll to top on page load
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   if (!place) {
     return (

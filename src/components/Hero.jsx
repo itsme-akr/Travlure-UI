@@ -6,38 +6,61 @@ export default function Hero({ onSearch, onOpenFilters }) {
   const navigate = useNavigate();
 
   const images = [
-    "/hero/hero1.jpg",
     "/hero/hero2.jpg",
+    "/hero/hero1.jpg",
     "/hero/hero3.jpg",
     "/hero/hero4.jpg",
     "/hero/hero5.jpg",
   ];
 
-  const [index, setIndex] = useState(0);
+  // 👇 clone first image at end
+  const extendedImages = [...images, images[0]];
 
-  // 🔄 Auto slide
+  const [index, setIndex] = useState(0);
+  const [transition, setTransition] = useState(true);
+
   useEffect(() => {
     const interval = setInterval(() => {
-      setIndex((prev) => (prev + 1) % images.length);
+      setIndex((prev) => prev + 1);
     }, 4000);
-
     return () => clearInterval(interval);
   }, []);
+
+  // 👇 handle seamless reset
+  useEffect(() => {
+    if (index === images.length) {
+      setTimeout(() => {
+        setTransition(false); // remove animation
+        setIndex(0);          // jump to real first
+      }, 700); // match duration
+
+      setTimeout(() => {
+        setTransition(true); // restore animation
+      }, 750);
+    }
+  }, [index, images.length]);
 
   return (
     <div className="relative w-full h-[95vh] overflow-hidden">
 
-      {/* 🔥 Background Images */}
-      {images.map((img, i) => (
-        <img
-          key={i}
-          src={img}
-          alt=""
-          className={`absolute w-full h-full object-cover transition-opacity duration-1000 ${
-            i === index ? "opacity-100" : "opacity-0"
+      {/* 🔥 SLIDER */}
+      <div className="overflow-hidden absolute inset-0">
+        <div
+          className={`flex h-full ${
+            transition ? "transition-transform duration-700 ease-in-out" : ""
           }`}
-        />
-      ))}
+          style={{ transform: `translateX(-${index * 100}%)` }}
+        >
+          {extendedImages.map((img, i) => (
+            <img
+              key={i}
+              src={img}
+              alt=""
+              className="w-full h-full object-cover flex-shrink-0"
+            />
+          ))}
+        </div>
+      </div>
 
       {/* 🔥 Overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/70" />
@@ -60,22 +83,24 @@ export default function Hero({ onSearch, onOpenFilters }) {
           Take Quiz to Start
         </button>
 
-        {/* 🔥 SEARCH BOX */}
         <div className="w-full max-w-4xl">
-           <SearchBox onSearch={onSearch}
-           onOpenFilters={onOpenFilters} />
+          <SearchBox
+            onSearch={onSearch}
+            onOpenFilters={onOpenFilters}
+          />
         </div>
-
       </div>
 
-      {/* 🔥 Dots Indicator */}
-      <div className="absolute bottom-6 w-full flex justify-center gap-2">
+      {/* 🔥 Dots */}
+      <div className="absolute bottom-6 w-full flex justify-center gap-2 z-10">
         {images.map((_, i) => (
           <div
             key={i}
             onClick={() => setIndex(i)}
             className={`w-2 h-2 rounded-full cursor-pointer ${
-              i === index ? "bg-white" : "bg-white/40"
+              i === index % images.length
+                ? "bg-white scale-110"
+                : "bg-white/40"
             }`}
           />
         ))}
